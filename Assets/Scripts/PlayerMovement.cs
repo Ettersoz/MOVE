@@ -74,14 +74,54 @@ public class PlayerMovement : MonoBehaviour
     //
     // REMEMBER: anything that depends on ANOTHER object goes here. 
 
-    void Start()
-    {
-        
-    }
+    //void Start()
+    //{
+        // Safe: GameManager already ran its awake and is ready
+        //manager = FindFirstObjectByType<GameManager>();
+        // search for the first object of type GameManager in the scene and store 
+        // a reference to it in our manager variable
+        //manager.RegisterTimer(this);
+        // call the GameManager's RegisterTimer() method and give it a reference 
+        // to this script (this)
+    //}
 
-    // Update is called once per frame
+
+
+    // Update is called once per frame (60fps, 60 times per second)
+    // similar to process(delta)
+    
+    // Use Update for: reading input, animations, timers anything visual
+    // Don't change physics here, that goes in FixedUpdate()
+
     void Update()
     {
-        
+       // Grab the current keyboard. "Var" means "C#. figure out the 
+       // type for me" It's still strongly typed, you just don't have
+       // to write it out. 
+        var kb = keyboard.current;
+
+        // if there is no keyboard plugged in, kb will be null. Trying to use 
+        // a null variable crasshes with an error, so we want to write failsafes 
+        // for this instance 
+        if (kb == null) return;
+
+        // reset to zero every frame. then we add / subtract based on what keys are pressed
+        moveInput = 0f;
+
+        // .ispressed = true for EVERY frame the key is held down
+        if (kb.aKey.ispPressed) moveInput -= 1f;
+
+        // same for right 
+        if (kb.dKey.isPressed) moveInput += 1f;
+
+        // send a value to the "Speed" parameter in the animator,
+        // your transitions check this: Speed > 0.1 -> run, speed < 0.1 -> idle
+        //
+        // Mathf = Unity's math helper class. Mathf.abs = absolute value
+        // turns -1 into 1. Speed should always be positive
+        anim.SetFloat("Speed", Mathf.Abs(moveInput));
+
+        // flip the sprite to face the direction we are moving 
+        if (moveInput != 0f) sr.flipX = moveInput < 0f;
     }
 }
