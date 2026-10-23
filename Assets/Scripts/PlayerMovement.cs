@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     // if float (value)f doesn't have the f C# thinks this is a double, and will give you an error
 
     [SerializeField] private float moveSpeed = 6f;
+    [SerializeField] private float jumpVelocity = 12f;
     // each attatchment of this script will have its own value, changing this one will not 
     // effect the others. 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -44,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
     // -1 = left, 0 = not pressing, 1 = right
     // used in update and use in fixed update
     float moveInput; 
+    bool jumpInput; // store whether jump was pressed
 
     // Use AWAKE or START 
 
@@ -108,7 +110,6 @@ public class PlayerMovement : MonoBehaviour
         // for this instance 
         if (kb == null)
         {
-            Debug.Log("kb = Null");
             return;
         }
         // reset to zero every frame. then we add / subtract based on what keys are pressed
@@ -121,7 +122,9 @@ public class PlayerMovement : MonoBehaviour
         // same for right 
         if (kb.dKey.isPressed) moveInput += 1f;
 
-        Debug.Log("moveInput: " + moveInput);
+        // jump height, set true
+        if (kb.wKey.isPressed) jumpInput = true;
+
 
 
         // send a value to the "Speed" parameter in the animator,
@@ -147,7 +150,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // linear velocity = how fast a rigidbody is moving in units/second.
+        // linearVelocity = how fast a rigidbody is moving in units/second.
         // (older unity versions call this "velocity" but it was renamed)
         // X direction (-1, 0, or 1) times speed. moveSpeed 6 = 6 units/second
         // Y we KEEP the curent viertical velocity (rb.linearVelocity.y) so
@@ -156,6 +159,15 @@ public class PlayerMovement : MonoBehaviour
         //No Time.detlaTime needed here: velocity is already "per second" 
         // and the physics engine handles the timing for us
         rb.linearVelocity = new Vector2(moveInput * moveSpeed , rb.linearVelocity.y);
+
+
+        // if jump was pressed, apply jump, and set to false again. 
+        if (jumpInput) 
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpVelocity);    
+            jumpInput = false;
+        }
+        
     }
 }
 
