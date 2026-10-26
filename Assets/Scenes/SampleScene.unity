@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 202939968}
   - component: {fileID: 202939970}
   m_Layer: 0
-  m_Name: runner_3
+  m_Name: mo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -211,7 +211,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -7212453299806723179, guid: 8d25e8129b40cfd4090066099f970448, type: 3}
+  m_Sprite: {fileID: -3375140564768868341, guid: 161de059e59615244b147eddb0cf3e65, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -271,8 +271,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.030237675, y: 0.38912594}
-  m_Size: {x: 0.28435802, y: 0.79841113}
+  m_Offset: {x: -0.034007072, y: -0.2555946}
+  m_Size: {x: 0.38649368, y: 0.47919083}
   m_Direction: 0
 --- !u!50 &202939969
 Rigidbody2D:
