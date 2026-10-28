@@ -19,7 +19,7 @@ using UnityEngine.InputSystem;
 // "MonoBehaviour"  -> PlayerMovement is a monobehavior, (inherits from it)
 // Similar to godots "exends" Inheriting from MonoBehavior lets you attach the "
 // Script to game Obects and gives you access to Awake, Update, FixedUpdate, etc.
-public class PlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     //Variables, also called Fields, declared at the top of class so every method below can use them 
     // Type: Name: = Value;
