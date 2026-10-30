@@ -1,16 +1,24 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript2 : MonoBehaviour
+public class JumpState : PlayerState
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public JumpState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
+
+    public override void Enter() => player.Anim.Play("Jump");
+
+    public override void LogicUpdate()
     {
+        if (!player.IsGrounded())
+            machine.ChangeState(player.Fall);
         
+        else if (player.MoveInput != 0) 
+            machine.ChangeState(player.Run);
+
+        else if (player.MoveInput == 0)
+            machine.ChangeState(player.Idle);
+    
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // need jump logic in player controller to get jump working
+    // maybe "apply vertical movement" seems a little dump though
 }
