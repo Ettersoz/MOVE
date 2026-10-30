@@ -1,16 +1,25 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript1 : MonoBehaviour
+public class RunState : PlayerState 
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // call the constructor for an run state 
+    public RunState(PlayerController m, PlayerStateMachine p) : base(m, p) {}
+
+    public override void Enter() => player.Anim.Play("Run");
+
+    public override void LogicUpdate()
     {
+        // we want to override so we are seeing the right things as they happen 
+        if (!player.IsGrounded())
+            machine.ChangeState(player.Fall);
+
+        if (player.JumpPressed) 
+            machine.ChangeState(player.Jump);
         
+        if (player.MoveInput == 0)
+            machine.ChangeState(player.Idle);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // we need to also actually apply the horizontal movement so 
+    public override void PhysicsUpdate() => player.ApplyHorizontalMovement();
 }
