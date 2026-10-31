@@ -314,7 +314,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 6
-  jumpVelocity: 12
+  jumpForce: 14
+  groundCheck: {fileID: 1631692362}
+  groundCheckRadius: 0.1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0

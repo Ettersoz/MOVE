@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class RunState : PlayerState 
@@ -13,13 +14,15 @@ public class RunState : PlayerState
         if (!player.IsGrounded())
             machine.ChangeState(player.Fall);
 
-        if (player.JumpPressed) 
+        else if (player.JumpPressed) 
             machine.ChangeState(player.Jump);
         
-        if (player.MoveInput == 0)
+        else if (player.MoveInput == 0)
             machine.ChangeState(player.Idle);
     }
 
     // we need to also actually apply the horizontal movement so 
-    public override void PhysicsUpdate() => player.ApplyHorizontalMovement();
+    public override void PhysicsUpdate() {
+        player.ApplyHorizontalMovement();
+    }
 }
