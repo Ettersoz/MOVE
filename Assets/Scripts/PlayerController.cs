@@ -121,6 +121,11 @@ public class PlayerController : MonoBehaviour
         Rb.linearVelocity = new UnityEngine.Vector2(MoveInput * moveSpeed, Rb.linearVelocity.y);
     }
 
+    public void ApplyJumpMovement()
+    {
+        if (JumpPressed) Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.y, jumpForce);
+    }
+
     void FlipToFaceInput()
     {
         // only flip when there is an imput 

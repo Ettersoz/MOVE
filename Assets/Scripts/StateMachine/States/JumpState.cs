@@ -19,6 +19,11 @@ public class JumpState : PlayerState
     
     }
 
+    public override void PhysicsUpdate()
+    {
+        player.ApplyJumpMovement();
+    }
+
     // need jump logic in player controller to get jump working
     // maybe "apply vertical movement" seems a little dump though
 }
