@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Unity.Mathematics;
@@ -25,6 +26,13 @@ public class FallState : PlayerState
             else 
                 machine.ChangeState(player.Idle);
         }
+    }
+
+    // update to make movement additive, requires new function 
+    // in player controller
+    public override void PhysicsUpdate()
+    {
+        player.ApplyStrafe();
     }
 
 }

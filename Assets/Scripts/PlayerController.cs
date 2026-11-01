@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 //File name MUST match the class name!!
 
@@ -32,6 +34,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 8f;
     public float jumpForce = 14f;
+    public float initialJumpForce = 0f;
 
     [Header("Ground Check")]
     public Transform groundCheck; // empty child object placed at the player 
@@ -123,7 +126,11 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyJumpMovement()
     {
-        if (JumpPressed) Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.y, jumpForce);
+        if (JumpPressed) 
+        { 
+            Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x, jumpForce);
+            initialJumpForce = Rb.linearVelocity.x;
+        }
     }
 
     void FlipToFaceInput()
@@ -139,6 +146,13 @@ public class PlayerController : MonoBehaviour
         if (groundCheck == null) return;
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+    }
+
+    // function to allow strafing when falling
+    public void ApplyStrafe()
+    {
+        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * .5f)) <= Math.Abs(initialJumpForce))
+            Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x + (MoveInput * .5f), Rb.linearVelocity.y);
     }
 
 }
