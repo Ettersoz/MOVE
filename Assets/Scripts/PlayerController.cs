@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -34,7 +35,9 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 8f;
     public float jumpForce = 14f;
-    public float initialJumpForce = 0f;
+    public float initialJumpVelocity = 0f;
+    public float strafeSpeed = .5f; 
+    public float minStrafeSpeed = 4f;
 
     [Header("Ground Check")]
     public Transform groundCheck; // empty child object placed at the player 
@@ -94,7 +97,7 @@ public class PlayerController : MonoBehaviour
         if (kb.dKey.isPressed) MoveInput += 1f;
 
         // jump height, set true
-        if (kb.wKey.isPressed) JumpPressed = true;
+        if (kb.wKey.wasPressedThisFrame) JumpPressed = true;
 
 
         // both inputs for controllers
@@ -107,6 +110,7 @@ public class PlayerController : MonoBehaviour
         FlipToFaceInput();
 
         StateMachine.CurrentState.LogicUpdate();
+        StateMachine.CurrentState.VariableAnimationChange();
     }
 
     void FixedUpdate()
@@ -114,9 +118,17 @@ public class PlayerController : MonoBehaviour
         StateMachine.CurrentState.PhysicsUpdate();
     }
 
+
+    // helper function to determine if the player is on the ground 
     public bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    }
+
+    // helper function to determine if the player is falling
+    public bool IsFalling()
+    {
+        return Rb.linearVelocity.y < -.01f;
     }
 
     public void ApplyHorizontalMovement()
@@ -129,7 +141,7 @@ public class PlayerController : MonoBehaviour
         if (JumpPressed) 
         { 
             Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x, jumpForce);
-            initialJumpForce = Rb.linearVelocity.x;
+            initialJumpVelocity = Rb.linearVelocity.x;
         }
     }
 
@@ -151,10 +163,17 @@ public class PlayerController : MonoBehaviour
     // function to allow strafing when falling
     public void ApplyStrafe()
     {
-        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * .5f)) <= Math.Abs(initialJumpForce))
+        float strafeCap = Math.Max(Math.Abs(initialJumpVelocity), minStrafeSpeed);
+
+        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * .5f)) <= strafeCap)
             Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x + (MoveInput * .5f), Rb.linearVelocity.y);
     }
 
+    public bool ChangeFallAnimation()
+    {
+        float threshold = 5f;
+        return (Rb.linearVelocity.y < threshold && Rb.linearVelocity.y > 0) || (Rb.linearVelocity.y < -threshold);
+    }
 }
 //     [SerializeField] private float moveSpeed = 6f;
 //     [SerializeField] private float jumpVelocity = 12f;

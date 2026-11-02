@@ -1,6 +1,3 @@
-using JetBrains.Annotations;
-using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -8,7 +5,7 @@ public class FallState : PlayerState
 {
     public FallState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
 
-    public override void Enter() => player.Anim.Play("Fall");
+    //public override void Enter() => player.Anim.Play("Fall");
 
     public override void LogicUpdate()
     {
@@ -33,6 +30,11 @@ public class FallState : PlayerState
     public override void PhysicsUpdate()
     {
         player.ApplyStrafe();
+    }
+
+    public override void VariableAnimationChange()
+    {
+        if (player.ChangeFallAnimation()) player.Anim.Play("Fall");
     }
 
 }

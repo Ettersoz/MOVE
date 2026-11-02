@@ -27,4 +27,6 @@ public abstract class PlayerState
     // called from PlayerController.FixedUpdate()
     // apply velocity/forces here so phyisics stays framrate-independent
     public virtual void PhysicsUpdate() {}
+
+    public virtual void VariableAnimationChange() {}
 }
