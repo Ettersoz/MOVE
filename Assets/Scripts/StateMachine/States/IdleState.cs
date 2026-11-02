@@ -26,6 +26,9 @@ public class IdleState : PlayerState
         else if (player.JumpPressed)
             machine.ChangeState(player.Jump);
 
+        else if (player.Sliding) 
+            machine.ChangeState(player.Slide);
+
         // if move input is not 0 -> we are runinng, i.e switch states
         else if (player.MoveInput != 0)
             machine.ChangeState(player.Run);

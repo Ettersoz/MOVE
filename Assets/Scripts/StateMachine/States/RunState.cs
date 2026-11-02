@@ -16,6 +16,9 @@ public class RunState : PlayerState
 
         else if (player.JumpPressed) 
             machine.ChangeState(player.Jump);
+
+        else if (player.Sliding)
+            machine.ChangeState(player.Slide);
         
         else if (player.MoveInput == 0)
             machine.ChangeState(player.Idle);

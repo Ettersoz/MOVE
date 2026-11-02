@@ -1,6 +1,7 @@
 using System;
 using System.Data.Common;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
@@ -55,10 +56,12 @@ public class PlayerController : MonoBehaviour
     public RunState Run {get; private set;}
     public JumpState Jump {get; private set;}
     public FallState Fall {get; private set;}
+    public SlideState Slide {get; private set;}
 
     // Input, read once per frame so states don't each poll input
     public float MoveInput { get; private set; } // -1, 0 ,1 
     public bool JumpPressed { get; private set; }
+    public bool Sliding { get; private set; }
     
     void Awake()
     {
@@ -71,6 +74,7 @@ public class PlayerController : MonoBehaviour
         Run = new RunState(this, StateMachine);
         Jump = new JumpState(this, StateMachine);
         Fall = new FallState(this, StateMachine);
+        Slide = new SlideState(this, StateMachine);
     }
 
     void Start()
@@ -82,6 +86,7 @@ public class PlayerController : MonoBehaviour
     {
         MoveInput = 0f;
         JumpPressed = false;
+        Sliding = false;
 
 
         var kb = Keyboard.current;
@@ -98,6 +103,8 @@ public class PlayerController : MonoBehaviour
 
         // jump height, set true
         if (kb.wKey.wasPressedThisFrame) JumpPressed = true;
+
+        if (kb.shiftKey.isPressed) Sliding = true;
 
 
         // both inputs for controllers
