@@ -37,6 +37,14 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 8f;
     public float jumpForce = 14f;
     public float initialJumpVelocity = 0f;
+    public float slideForce = 5f;
+    public float currentSlideVelocity = 0f;
+    
+    // neither strafe speed nore minStrafe speed work
+    // likely issue in application of strafing in fall state or jump state
+    // might not be applied in one or both
+    // some non-linear motion happening however, might have been 
+    // overwritten by some constant
     public float strafeSpeed = .5f; 
     public float minStrafeSpeed = 4f;
 
@@ -165,6 +173,15 @@ public class PlayerController : MonoBehaviour
         if (groundCheck == null) return;
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+    }
+
+    public void ApplySlide(float initialMoveInput)
+    {
+        float slideDampening = 1.02f;
+        if (currentSlideVelocity <= 4) slideDampening = 1.2f; 
+        if (currentSlideVelocity <= 1) currentSlideVelocity = 0; 
+        Rb.linearVelocity = new UnityEngine.Vector2(initialMoveInput * currentSlideVelocity, Rb.linearVelocity.y);
+        currentSlideVelocity = currentSlideVelocity / slideDampening;
     }
 
     // function to allow strafing when falling

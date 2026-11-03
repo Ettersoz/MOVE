@@ -41,6 +41,4 @@ public class JumpState : PlayerState
         if (player.ChangeFallAnimation()) player.Anim.Play("JumpFlat");
     }
 
-    // need jump logic in player controller to get jump working
-    // maybe "apply vertical movement" seems a little dump though
 }

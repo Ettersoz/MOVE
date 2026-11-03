@@ -1,10 +1,19 @@
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class SlideState : PlayerState
 {
+    float initialMoveInput = 0;
+
     public SlideState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
 
-    public override void Enter() => player.Anim.Play("Slide");
+    public override void Enter()
+    {
+        initialMoveInput = player.MoveInput;
+        player.Anim.Play("Slide");  
+        player.currentSlideVelocity = player.slideForce;
+
+    } 
 
     public override void LogicUpdate()
     {
@@ -19,4 +28,10 @@ public class SlideState : PlayerState
                 machine.ChangeState(player.Jump);
         }
     }
+
+    public override void PhysicsUpdate()
+    {
+        player.ApplySlide(initialMoveInput);
+    }
+
 }
