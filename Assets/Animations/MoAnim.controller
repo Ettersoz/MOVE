@@ -52,6 +52,32 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-8316380278060094966
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Idle2
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: b6186230663503749abc6bb3df9f6732, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-7434845003558219284
 AnimatorState:
   serializedVersion: 6
@@ -59,7 +85,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Idle
+  m_Name: Idle1
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -118,7 +144,7 @@ AnimatorStateMachine:
     m_Position: {x: 230, y: -30, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -7434845003558219284}
-    m_Position: {x: 230, y: 210, z: 0}
+    m_Position: {x: 490, y: -30, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3996394871078793507}
     m_Position: {x: 230, y: 30, z: 0}
@@ -133,7 +159,13 @@ AnimatorStateMachine:
     m_Position: {x: 230, y: -90, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8622521382921974559}
-    m_Position: {x: 265, y: -25, z: 0}
+    m_Position: {x: 230, y: -150, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -8316380278060094966}
+    m_Position: {x: 490, y: -90, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 5899718436533363388}
+    m_Position: {x: 525, y: -25, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -199,6 +231,32 @@ AnimatorController:
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
   m_EvaluateTransitionsOnStart: 1
+--- !u!1102 &5899718436533363388
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Idle3
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: f51f4ed9d3dc4a04a91d19fe1bc1e18b, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &7052204386196500205
 AnimatorState:
   serializedVersion: 6
