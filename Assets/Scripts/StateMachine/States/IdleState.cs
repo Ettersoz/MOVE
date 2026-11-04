@@ -10,11 +10,17 @@ public class IdleState : PlayerState
     // the key word "base" refers to the base object "PlayerState" 
     public IdleState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
 
+    public string[] IdleAnims = { "Idle1", "Idle2", "Idle3" };
+
     // the animator must be named exactly "Idle" 
     // the override keyword "overrides" the definition of the function in the superclass
     // PlayerState. This allows us to make specific changes to the class function 
     // base on the subclass we are making
-    public override void Enter() => player.Anim.Play("Idle");
+    public override void Enter()
+    {
+        string anim = IdleAnims[Random.Range(0, IdleAnims.Length)];
+        player.Anim.Play(anim);  
+    } 
 
     public override void LogicUpdate()
     {
