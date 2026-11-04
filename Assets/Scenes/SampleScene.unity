@@ -317,10 +317,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 6
   jumpForce: 14
-  initialJumpVelocity: 0
+  initialJumpVelocityX: 0
   slideForce: 9
   currentSlideVelocity: 5
-  strafeSpeed: 0.2
+  strafeSpeed: 0.5
   minStrafeSpeed: 4
   groundCheck: {fileID: 1364627569}
   groundCheckRadius: 0.1

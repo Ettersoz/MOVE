@@ -11,16 +11,16 @@ public class RunState : PlayerState
     public override void LogicUpdate()
     {
         // we want to override so we are seeing the right things as they happen 
-        if (!player.IsGrounded())
+        if (!player.IsGrounded()) // if the player is not grounded, unilaterally we change the state to fall
             machine.ChangeState(player.Fall);
 
-        else if (player.JumpPressed) 
+        else if (player.JumpPressed) // if jump pressed -> change the state to jump
             machine.ChangeState(player.Jump);
 
-        else if (player.Sliding)
-            machine.ChangeState(player.Slide);
+        else if (player.Sliding) // if slide is active -> change state to slide         
+            machine.ChangeState(player.Slide);  
         
-        else if (player.MoveInput == 0)
+        else if (player.MoveInput == 0) // if no move input -> change state to idle
             machine.ChangeState(player.Idle);
     }
 

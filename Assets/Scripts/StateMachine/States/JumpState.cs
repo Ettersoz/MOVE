@@ -14,28 +14,34 @@ public class JumpState : PlayerState
     {
         
         if (player.IsFalling()) 
-        {
             machine.ChangeState(player.Fall);
-        }
         
+        // check linear velocity to determine if player is leaving the ground on a jump
+        // if this passes, we know we are on the ground, and this condition is required for all others
         else if (player.IsGrounded() && player.Rb.linearVelocity.y <= .01f) 
         {
-            if (player.Sliding) machine.ChangeState(player.Slide);
+            // player.Sliding == true -> change state to slide
+            if (player.Sliding) 
+                machine.ChangeState(player.Slide); 
 
+            // move input != 0 -> change state to run 
             if (player.MoveInput != 0) 
                 machine.ChangeState(player.Run);
 
+            // if move input == 0 -> change state to idle
             else if (player.MoveInput == 0)
                 machine.ChangeState(player.Idle);
         }
         
     }
 
+    // physics update for the strafe movement
     public override void PhysicsUpdate()
     {
         player.ApplyStrafe();    
     }
 
+    // this handles the variable animation changes for the jump state
     public override void VariableAnimationChange()
     {
         if (player.ChangeFallAnimation()) player.Anim.Play("JumpFlat");

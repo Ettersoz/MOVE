@@ -36,15 +36,9 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 8f;
     public float jumpForce = 14f;
-    public float initialJumpVelocity = 0f;
+    public float initialJumpVelocityX = 0f;
     public float slideForce = 5f;
     public float currentSlideVelocity = 0f;
-    
-    // neither strafe speed nore minStrafe speed work
-    // likely issue in application of strafing in fall state or jump state
-    // might not be applied in one or both
-    // some non-linear motion happening however, might have been 
-    // overwritten by some constant
     public float strafeSpeed = .5f; 
     public float minStrafeSpeed = 4f;
 
@@ -96,7 +90,7 @@ public class PlayerController : MonoBehaviour
         JumpPressed = false;
         Sliding = false;
 
-
+        // assign keyboard input to the player controller 
         var kb = Keyboard.current;
         if (kb == null) return;
 
@@ -114,20 +108,21 @@ public class PlayerController : MonoBehaviour
 
         if (kb.shiftKey.isPressed) Sliding = true;
 
-
-        // both inputs for controllers
-        // MoveInput = Input.GetAxisRaw("Horizontal");
-        // JumpPressed = Input.GetButtonDown("Jump");
-
         // once controller support is added, this will be necissary 
         MoveInput = Mathf.Clamp(MoveInput, -1f, 1f);
 
+        // flip based on what direction the player is trying to input movements
+        // this needs exclusion/update for slide state          
         FlipToFaceInput();
 
+        // we run logic update to check for any state switches
         StateMachine.CurrentState.LogicUpdate();
+
+        // purley for changing animations for jump state
         StateMachine.CurrentState.VariableAnimationChange();
     }
 
+    // applies whatever states physics have been defined
     void FixedUpdate()
     {
         StateMachine.CurrentState.PhysicsUpdate();
@@ -146,17 +141,21 @@ public class PlayerController : MonoBehaviour
         return Rb.linearVelocity.y < -.01f;
     }
 
+    // phsyics for horizontal movement (running) for the running state
     public void ApplyHorizontalMovement()
     {
         Rb.linearVelocity = new UnityEngine.Vector2(MoveInput * moveSpeed, Rb.linearVelocity.y);
     }
 
+    // phsyics for vertical movement (jumping) for the jump state
     public void ApplyJumpMovement()
     {
+        // check for a Jump Press, as this will run every frame in physicsUpdate
         if (JumpPressed) 
         { 
             Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x, jumpForce);
-            initialJumpVelocity = Rb.linearVelocity.x;
+            // initial jump velocity saved for strafing while falling 
+            initialJumpVelocityX = Rb.linearVelocity.x; 
         }
     }
 
@@ -175,21 +174,29 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
     }
 
+
+    // slide physics for the slide state
     public void ApplySlide(float initialMoveInput)
     {
-        float slideDampening = 1.02f;
+        float slideDampening = 1.02f; // the rate at which the slide recreases 
+        // increase dampening when slide velocity is low (thoretically)
         if (currentSlideVelocity <= 4) slideDampening = 1.2f; 
-        if (currentSlideVelocity <= 1) currentSlideVelocity = 0; 
+        // stop sliding when velocity is very low
+        if (currentSlideVelocity <= 1) currentSlideVelocity = 0;
+        // apply slide at a current rate right now 
         Rb.linearVelocity = new UnityEngine.Vector2(initialMoveInput * currentSlideVelocity, Rb.linearVelocity.y);
-        currentSlideVelocity = currentSlideVelocity / slideDampening;
+        currentSlideVelocity = currentSlideVelocity / slideDampening; // reduce the slide velocity by the dampening value
     }
 
     // function to allow strafing when falling
     public void ApplyStrafe()
     {
-        float strafeCap = Math.Max(Math.Abs(initialJumpVelocity), minStrafeSpeed);
+        // determines the strafe cap between the initial horizontal movement speed 
+        // and the minimum strafe speed the player should achieve
+        float strafeCap = Math.Max(Math.Abs(initialJumpVelocityX), minStrafeSpeed);
 
-        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * .5f)) <= strafeCap)
+        // The player can only strafe up to the calculated cap 
+        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * strafeSpeed)) <= strafeCap)
             Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x + (MoveInput * .5f), Rb.linearVelocity.y);
     }
 
