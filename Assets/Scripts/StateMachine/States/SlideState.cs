@@ -45,7 +45,6 @@ public class SlideState : PlayerState
     public override void PhysicsUpdate()
     {
         player.ApplySlide(initialMoveInput, maxSlideTimer);
-        player.VariableSlideAnimationChange();
     }
 
 }

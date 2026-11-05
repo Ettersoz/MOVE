@@ -214,23 +214,12 @@ public class PlayerController : MonoBehaviour
         
         Rb.linearVelocity = new UnityEngine.Vector2(newVelocityX, Rb.linearVelocity.y);
     }
-
-
-
     public bool ChangeFallAnimation()
     {
         float threshold = 5f;
         return (Rb.linearVelocity.y < threshold && Rb.linearVelocity.y > 0) || (Rb.linearVelocity.y < -threshold);
     }
 
-    public void VariableSlideAnimationChange()
-    {
-        float speedPercent = Mathf.Abs(Rb.linearVelocity.x) / (slideForce);
-
-        speedPercent = Mathf.Clamp(speedPercent, 0f, 2f);
-
-        Anim.SetFloat("SlideSpeed", speedPercent);
-    }
 }
 //     [SerializeField] private float moveSpeed = 6f;
 //     [SerializeField] private float jumpVelocity = 12f;
