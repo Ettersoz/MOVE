@@ -41,6 +41,15 @@ public class SlideState : PlayerState
 
     }
 
+    public override void VariableAnimationChange()
+    {
+        float speedPercent = Mathf.Abs(player.Rb.linearVelocity.x) / (player.slideForce);
+
+        speedPercent = Mathf.Clamp(speedPercent, 0f, 2f);
+
+        player.Anim.SetFloat("SlideSpeed", speedPercent);
+    }
+
     // physics update for the slide movement
     public override void PhysicsUpdate()
     {

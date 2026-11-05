@@ -51,13 +51,4 @@ public class IdleState : PlayerState
         // you can't just set .x on its own; unity requires assinging a whole Vector 2
         player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
     }
-
-        public override void VariableAnimationChange()
-    {
-        float speedPercent = Mathf.Abs(player.Rb.linearVelocity.x) / (player.slideForce);
-
-        speedPercent = Mathf.Clamp(speedPercent, 0f, 2f);
-
-        player.Anim.SetFloat("SlideSpeed", speedPercent);
-    }
 }
