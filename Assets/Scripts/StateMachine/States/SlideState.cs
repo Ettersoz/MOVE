@@ -3,12 +3,15 @@ using UnityEngine.PlayerLoop;
 
 public class SlideState : PlayerState
 {
-    float initialMoveInput = 0;
+    float initialMoveInput = 0f;
+
+    float maxSlideTimer = 0f;
 
     public SlideState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
 
     public override void Enter()
     {
+        Debug.Log("Entering Slide State");    
         // store what direciton the player is going in when entering the slide state
         initialMoveInput = player.MoveInput;
         // play slide animation, update to be variable on the speed of the slide
@@ -19,6 +22,8 @@ public class SlideState : PlayerState
 
     public override void LogicUpdate()
     {
+        maxSlideTimer += Time.deltaTime;
+
         // if the player is falling, change to the fall state
         if (player.IsFalling()) machine.ChangeState(player.Fall);
 
@@ -39,7 +44,7 @@ public class SlideState : PlayerState
     // physics update for the slide movement
     public override void PhysicsUpdate()
     {
-        player.ApplySlide(initialMoveInput);
+        player.ApplySlide(initialMoveInput, maxSlideTimer);
     }
 
 }

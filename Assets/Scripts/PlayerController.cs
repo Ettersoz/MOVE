@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
         if (kb.dKey.isPressed) MoveInput += 1f;
 
         // jump height, set true
-        if (kb.wKey.wasPressedThisFrame) JumpPressed = true;
+        if (kb.spaceKey.wasPressedThisFrame || kb.wKey.wasPressedThisFrame) JumpPressed = true;
 
         if (kb.shiftKey.isPressed) Sliding = true;
 
@@ -121,7 +121,6 @@ public class PlayerController : MonoBehaviour
         // purley for changing animations for jump state
         StateMachine.CurrentState.VariableAnimationChange();
 
-        Debug.Log("Current Velocity: " + Rb.linearVelocity.x);
     }
 
     // applies whatever states physics have been defined
@@ -178,7 +177,7 @@ public class PlayerController : MonoBehaviour
 
 
     // slide physics for the slide state
-    public void ApplySlide(float initialMoveInput)
+    public void ApplySlide(float initialMoveInput, float maxSlideTimer)
     {
         float slideDampening = 1.02f; // the rate at which the slide recreases 
         // increase dampening when slide velocity is low (thoretically)
@@ -186,8 +185,12 @@ public class PlayerController : MonoBehaviour
         // stop sliding when velocity is very low
         if (currentSlideVelocity <= 1) currentSlideVelocity = 0;
         // apply slide at a current rate right now 
-        Rb.linearVelocity = new UnityEngine.Vector2(initialMoveInput * currentSlideVelocity, Rb.linearVelocity.y);
-        currentSlideVelocity = currentSlideVelocity / slideDampening; // reduce the slide velocity by the dampening value
+
+        if (maxSlideTimer > .2f) 
+        {
+            Rb.linearVelocity = new UnityEngine.Vector2(initialMoveInput * currentSlideVelocity, Rb.linearVelocity.y);
+            currentSlideVelocity = currentSlideVelocity / slideDampening; // reduce the slide velocity by the dampening value
+        }
     }
 
     // function to allow strafing when falling
@@ -199,10 +202,9 @@ public class PlayerController : MonoBehaviour
 
         float newVelocityX = 0f;
 
-
         // The player can only strafe up to the calculated cap 
-        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * strafeSpeed)) <= strafeCap) 
-            newVelocityX = strafeCap;
+        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * strafeSpeed)) > strafeCap) 
+            newVelocityX = strafeCap * MoveInput;
         else
             newVelocityX = Rb.linearVelocity.x + (MoveInput * strafeSpeed);
         
