@@ -14,8 +14,8 @@ public class SlideState : PlayerState
         // play slide animation, update to be variable on the speed of the slide
         player.Anim.Play("Slide");  
         // set the initial slide velocity to the player's slide force
-        player.currentSlideVelocity = player.slideForce;
-
+        player.currentSlideVelocity = player.slideForce + Mathf.Abs(player.Rb.linearVelocity.x);
+        Debug.Log(initialMoveInput + " " + player.slideForce + " " + player.Rb.linearVelocity.x + " " + player.currentSlideVelocity);
     } 
 
     public override void LogicUpdate()
