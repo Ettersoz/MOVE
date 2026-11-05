@@ -318,7 +318,7 @@ MonoBehaviour:
   moveSpeed: 6
   jumpForce: 14
   initialJumpVelocityX: 0
-  slideForce: 4
+  slideForce: 5
   currentSlideVelocity: 5
   strafeSpeed: 0.5
   minStrafeSpeed: 4

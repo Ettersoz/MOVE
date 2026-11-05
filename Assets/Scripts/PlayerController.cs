@@ -41,6 +41,8 @@ public class PlayerController : MonoBehaviour
     public float currentSlideVelocity = 0f;
     public float strafeSpeed = .5f; 
     public float minStrafeSpeed = 4f;
+    float slideDampeningTime = 1.5f; // the time at which the slide dampening increases
+    float slideMaxSpeedTime = 0.5f;
 
     [Header("Ground Check")]
     public Transform groundCheck; // empty child object placed at the player 
@@ -182,13 +184,13 @@ public class PlayerController : MonoBehaviour
         float slideDampening = 1.02f; // the rate at which the slide recreases 
         // increase dampening when slide velocity is low (thoretically)
 
-        if (maxSlideTimer > 1.5f) slideDampening = 1.05f;
+        if (maxSlideTimer > slideDampeningTime) slideDampening = 1.05f;
 
         // stop sliding when velocity is very low
         if (currentSlideVelocity <= 1) currentSlideVelocity = 0;
         // apply slide at a current rate right now 
 
-        if (maxSlideTimer > .2f) 
+        if (maxSlideTimer > slideMaxSpeedTime) 
         {
             Rb.linearVelocity = new UnityEngine.Vector2(initialMoveInput * currentSlideVelocity, Rb.linearVelocity.y);
             currentSlideVelocity = currentSlideVelocity / slideDampening; // reduce the slide velocity by the dampening value
@@ -213,10 +215,21 @@ public class PlayerController : MonoBehaviour
         Rb.linearVelocity = new UnityEngine.Vector2(newVelocityX, Rb.linearVelocity.y);
     }
 
+
+
     public bool ChangeFallAnimation()
     {
         float threshold = 5f;
         return (Rb.linearVelocity.y < threshold && Rb.linearVelocity.y > 0) || (Rb.linearVelocity.y < -threshold);
+    }
+
+    public void VariableSlideAnimationChange()
+    {
+        float speedPercent = Mathf.Abs(Rb.linearVelocity.x) / (slideForce);
+
+        speedPercent = Mathf.Clamp(speedPercent, 0f, 2f);
+
+        Anim.SetFloat("SlideSpeed", speedPercent);
     }
 }
 //     [SerializeField] private float moveSpeed = 6f;
