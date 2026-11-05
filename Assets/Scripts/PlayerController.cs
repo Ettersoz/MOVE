@@ -181,7 +181,9 @@ public class PlayerController : MonoBehaviour
     {
         float slideDampening = 1.02f; // the rate at which the slide recreases 
         // increase dampening when slide velocity is low (thoretically)
-        if (currentSlideVelocity <= 4) slideDampening = 1.2f; 
+
+        if (maxSlideTimer > 1.5f) slideDampening = 1.05f;
+
         // stop sliding when velocity is very low
         if (currentSlideVelocity <= 1) currentSlideVelocity = 0;
         // apply slide at a current rate right now 
