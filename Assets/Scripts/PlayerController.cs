@@ -120,6 +120,8 @@ public class PlayerController : MonoBehaviour
 
         // purley for changing animations for jump state
         StateMachine.CurrentState.VariableAnimationChange();
+
+        Debug.Log("Current Velocity: " + Rb.linearVelocity.x);
     }
 
     // applies whatever states physics have been defined
@@ -195,9 +197,16 @@ public class PlayerController : MonoBehaviour
         // and the minimum strafe speed the player should achieve
         float strafeCap = Math.Max(Math.Abs(initialJumpVelocityX), minStrafeSpeed);
 
+        float newVelocityX = 0f;
+
+
         // The player can only strafe up to the calculated cap 
-        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * strafeSpeed)) <= strafeCap)
-            Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x + (MoveInput * .5f), Rb.linearVelocity.y);
+        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * strafeSpeed)) <= strafeCap) 
+            newVelocityX = strafeCap;
+        else
+            newVelocityX = Rb.linearVelocity.x + (MoveInput * strafeSpeed);
+        
+        Rb.linearVelocity = new UnityEngine.Vector2(newVelocityX, Rb.linearVelocity.y);
     }
 
     public bool ChangeFallAnimation()
