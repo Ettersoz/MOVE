@@ -12,7 +12,8 @@ public class FallState : PlayerState
         if(player.IsGrounded())
         {
             
-            if (player.Sliding) machine.ChangeState(player.Slide);
+            if (player.Sliding) 
+                machine.ChangeState(player.Slide);
 
             // if there is player input, run state
             if (player.MoveInput != 0)

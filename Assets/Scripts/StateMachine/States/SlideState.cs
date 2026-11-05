@@ -28,7 +28,13 @@ public class SlideState : PlayerState
         {
             if (player.JumpPressed) 
                 machine.ChangeState(player.Jump);
+            
+            // if the player is not moving from slide, make them stand up
+            else if (player.Rb.linearVelocity.x == 0)
+                machine.ChangeState(player.Idle);
         }
+
+
     }
 
     // physics update for the slide movement

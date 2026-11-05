@@ -32,8 +32,10 @@ public class IdleState : PlayerState
         else if (player.JumpPressed)
             machine.ChangeState(player.Jump);
 
-        else if (player.Sliding) 
-            machine.ChangeState(player.Slide);
+
+        // for now this bugs out, but I think it would be cute if the player just sat if you entered slide in idle. 
+        //else if (player.Sliding) 
+            //machine.ChangeState(player.Slide);
 
         // if move input is not 0 -> we are runinng, i.e switch states
         else if (player.MoveInput != 0)
