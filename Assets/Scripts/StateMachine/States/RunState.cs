@@ -11,8 +11,7 @@ public class RunState : PlayerState
     private float slideTimer = 0f; 
 
     public override void Enter()
-    {
-        Debug.Log("Entering Run State");        
+    { 
         player.Anim.Play("Run"); 
         slideTimer = 0f; 
     } 

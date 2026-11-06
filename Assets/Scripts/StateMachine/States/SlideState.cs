@@ -10,14 +10,15 @@ public class SlideState : PlayerState
     public SlideState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
 
     public override void Enter()
-    {
-        Debug.Log("Entering Slide State");    
+    { 
         // store what direciton the player is going in when entering the slide state
         initialMoveInput = player.MoveInput;
         // play slide animation, update to be variable on the speed of the slide
         player.Anim.Play("Slide");  
         // set the initial slide velocity to the player's slide force
         player.currentSlideVelocity = player.slideForce + Mathf.Abs(player.Rb.linearVelocity.x);
+        // set slide timer to 0 
+        maxSlideTimer = 0f;
     } 
 
     public override void LogicUpdate()

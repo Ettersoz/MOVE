@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
     public float strafeSpeed = .5f; 
     public float minStrafeSpeed = 4f;
     float slideDampeningTime = 1.5f; // the time at which the slide dampening increases
-    float slideMaxSpeedTime = 0.5f;
+    float slideMaxSpeedTime = .5f;
 
     [Header("Ground Check")]
     public Transform groundCheck; // empty child object placed at the player 
@@ -184,7 +184,7 @@ public class PlayerController : MonoBehaviour
         float slideDampening = 1.02f; // the rate at which the slide recreases 
         // increase dampening when slide velocity is low (thoretically)
 
-        if (maxSlideTimer > slideDampeningTime) slideDampening = 1.05f;
+        if (maxSlideTimer > slideDampeningTime) slideDampening = 1.1f;
 
         // stop sliding when velocity is very low
         if (currentSlideVelocity <= 1) currentSlideVelocity = 0;
@@ -192,9 +192,10 @@ public class PlayerController : MonoBehaviour
 
         if (maxSlideTimer > slideMaxSpeedTime) 
         {
-            Rb.linearVelocity = new UnityEngine.Vector2(initialMoveInput * currentSlideVelocity, Rb.linearVelocity.y);
             currentSlideVelocity = currentSlideVelocity / slideDampening; // reduce the slide velocity by the dampening value
         }
+
+        Rb.linearVelocity = new UnityEngine.Vector2(initialMoveInput * currentSlideVelocity, Rb.linearVelocity.y);
     }
 
     // function to allow strafing when falling

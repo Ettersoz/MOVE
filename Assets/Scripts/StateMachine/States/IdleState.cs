@@ -18,7 +18,6 @@ public class IdleState : PlayerState
     // base on the subclass we are making
     public override void Enter()
     {
-        Debug.Log("Entering Idle State");
         string anim = IdleAnims[Random.Range(0, IdleAnims.Length)];
         player.Anim.Play(anim);  
     } 
