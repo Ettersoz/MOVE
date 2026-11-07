@@ -10,7 +10,14 @@ public class IdleState : PlayerState
     // the key word "base" refers to the base object "PlayerState" 
     public IdleState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
 
-    public string[] IdleAnims = { "Idle1", "Idle2", "Idle3" };
+    float idleTimer = 0f;
+
+    float randInterval = 0f;
+
+    public string[] IdleAnims = { "Idle0", "Idle1", "Idle2", "Idle3" };
+
+    string currentAnim = "Idle0";
+
 
     // the animator must be named exactly "Idle" 
     // the override keyword "overrides" the definition of the function in the superclass
@@ -18,8 +25,8 @@ public class IdleState : PlayerState
     // base on the subclass we are making
     public override void Enter()
     {
-        string anim = IdleAnims[Random.Range(0, IdleAnims.Length)];
-        player.Anim.Play(anim);  
+        player.Anim.Play("Idle0"); 
+        randInterval = Random.Range(3f, 4f); 
     } 
 
     public override void LogicUpdate()
@@ -53,6 +60,29 @@ public class IdleState : PlayerState
 
     public override void VariableAnimationChange()
     {
+
         player.FlipToFaceInput();
+        if (currentAnim != "Idle0" && (player.Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)) 
+        // if the current animation is not default idle, check if it has finished
+        {
+            player.Anim.Play("Idle0");
+            // if so switch back to idle animation and reset current animation value
+            currentAnim = "Idle0";
+            // determine random interval
+            float randInterval = Random.Range(3f, 4f);
+        }
+        else
+        {
+            // if not, increment the idle timer
+            idleTimer += Time.deltaTime;
+            // if our interval is over, play a new random animation, reset the timer
+            if (idleTimer >= randInterval)
+            {
+                string anim = IdleAnims[Random.Range(1, IdleAnims.Length)];
+                player.Anim.Play(anim, 0, 0f);
+                currentAnim = anim;
+                idleTimer = 0f;
+            }
+        }
     }
 }
