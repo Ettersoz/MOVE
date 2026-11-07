@@ -50,4 +50,9 @@ public class IdleState : PlayerState
         // you can't just set .x on its own; unity requires assinging a whole Vector 2
         player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
     }
+
+    public override void VariableAnimationChange()
+    {
+        player.FlipToFaceInput();
+    }
 }

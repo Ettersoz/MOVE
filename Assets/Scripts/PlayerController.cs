@@ -115,7 +115,6 @@ public class PlayerController : MonoBehaviour
 
         // flip based on what direction the player is trying to input movements
         // this needs exclusion/update for slide state          
-        FlipToFaceInput();
 
         // we run logic update to check for any state switches
         StateMachine.CurrentState.LogicUpdate();
@@ -162,7 +161,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void FlipToFaceInput()
+    public void FlipToFaceInput()
     {
         // only flip when there is an imput 
         if (MoveInput != 0)

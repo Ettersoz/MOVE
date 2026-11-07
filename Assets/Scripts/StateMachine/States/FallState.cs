@@ -39,6 +39,7 @@ public class FallState : PlayerState
     public override void VariableAnimationChange()
     {
         if (player.ChangeFallAnimation()) player.Anim.Play("Fall");
+        player.FlipToFaceInput();
     }
 
 }

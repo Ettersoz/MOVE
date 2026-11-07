@@ -39,4 +39,8 @@ public class RunState : PlayerState
     public override void PhysicsUpdate() {
         player.ApplyHorizontalMovement();
     }
+    public override void VariableAnimationChange()
+    {
+        player.FlipToFaceInput();
+    }
 }
