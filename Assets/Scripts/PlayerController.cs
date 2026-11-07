@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     public float minStrafeSpeed = 4f;
     float slideDampeningTime = 1.5f; // the time at which the slide dampening increases
     float slideMaxSpeedTime = .5f;
+    public bool skid = false;
 
     [Header("Ground Check")]
     public Transform groundCheck; // empty child object placed at the player 
@@ -90,9 +91,26 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        HandleInputs();
+
+        // we run logic update to check for any state switches
+        StateMachine.CurrentState.LogicUpdate();
+
+        // handles any custom animation differences
+        // flip for input, variable jump input, slide input
+        StateMachine.CurrentState.VariableAnimationChange();
+    }
+
+    // ####################################################
+    // INPUT HANDLING FUNCTION(S) 
+    // ####################################################
+
+    void HandleInputs()
+    {
         MoveInput = 0f;
         JumpPressed = false;
         Sliding = false;
+        skid = false;
 
         // assign keyboard input to the player controller 
         var kb = Keyboard.current;
@@ -112,22 +130,10 @@ public class PlayerController : MonoBehaviour
 
         if (kb.shiftKey.isPressed) Sliding = true;
 
+        if (kb.wKey.isPressed && StateMachine.CurrentState == Slide) skid = true; 
+
         // once controller support is added, this will be necissary 
         MoveInput = Mathf.Clamp(MoveInput, -1f, 1f);
-
-        // flip based on what direction the player is trying to input movements
-        // this needs exclusion/update for slide state          
-
-        // we run logic update to check for any state switches
-        StateMachine.CurrentState.LogicUpdate();
-
-        // handles any custom animation differences
-        // flip for input, variable jump input, slide input
-        StateMachine.CurrentState.VariableAnimationChange();
-
-        // handles any custom inputs per state
-        // "w" in slide enters skid
-        StateMachine.CurrentState.CustomInputHandler(kb);
     }
 
     // applies whatever states physics have been defined
@@ -135,7 +141,6 @@ public class PlayerController : MonoBehaviour
     {
         StateMachine.CurrentState.PhysicsUpdate();
     }
-
 
     // helper function to determine if the player is on the ground 
     public bool IsGrounded()
@@ -149,11 +154,16 @@ public class PlayerController : MonoBehaviour
         return Rb.linearVelocity.y < -.01f;
     }
 
+    // ####################################################
+    // STATE SPECIFIC PHYSICS FUNCTIONS 
+    // ####################################################
+
     // phsyics for horizontal movement (running) for the running state
     public void ApplyHorizontalMovement()
     {
         Rb.linearVelocity = new UnityEngine.Vector2(MoveInput * moveSpeed, Rb.linearVelocity.y);
     }
+
 
     // phsyics for vertical movement (jumping) for the jump state
     public void ApplyJumpMovement()
@@ -166,22 +176,6 @@ public class PlayerController : MonoBehaviour
             initialJumpVelocityX = Rb.linearVelocity.x; 
         }
     }
-
-    public void FlipToFaceInput()
-    {
-        // only flip when there is an imput 
-        if (MoveInput != 0)
-            transform.localScale = new UnityEngine.Vector3(Mathf.Sign(MoveInput), 1f, 1f);
-    }
-
-    // Draws the ground check circle in the Scene view for debugging. 
-    void OnDrawGizmosSelected()
-    {
-        if (groundCheck == null) return;
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-    }
-
 
     // slide physics for the slide state
     public void ApplySlide(float initialMoveInput, float maxSlideTimer)
@@ -220,17 +214,38 @@ public class PlayerController : MonoBehaviour
         
         Rb.linearVelocity = new UnityEngine.Vector2(newVelocityX, Rb.linearVelocity.y);
     }
-    public bool ChangeFallAnimation()
-    {
-        float threshold = 5f;
-        return (Rb.linearVelocity.y < threshold && Rb.linearVelocity.y > 0) || (Rb.linearVelocity.y < -threshold);
-    }
 
     public void ApplySkid()
     {
         Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x / 1.3f, Rb.linearVelocity.y);
         // if velocity is low enough, just set 0, reduce computation, increase consistency
         if (Math.Abs(Rb.linearVelocity.x) <= 0.1) Rb.linearVelocity = new UnityEngine.Vector2(0, Rb.linearVelocity.y);
+    }
+
+    // ####################################################
+    // STATE SPECIFIC ANIMATION FUNCTIONS 
+    // ####################################################
+
+    public void FlipToFaceInput()
+    { 
+        // flip based on what direction the player is trying to input movements
+        // this needs exclusion/update for slide state           
+        if (MoveInput != 0)
+            transform.localScale = new UnityEngine.Vector3(Mathf.Sign(MoveInput), 1f, 1f);
+    }
+
+    // Draws the ground check circle in the Scene view for debugging. 
+    void OnDrawGizmosSelected()
+    {
+        if (groundCheck == null) return;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+    }
+
+    public bool ChangeFallAnimation()
+    {
+        float threshold = 5f;
+        return (Rb.linearVelocity.y < threshold && Rb.linearVelocity.y > 0) || (Rb.linearVelocity.y < -threshold);
     }
 
 }

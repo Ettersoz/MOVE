@@ -39,12 +39,4 @@ public class SkidState : PlayerState
         player.ApplySkid();
     }
 
-    public override void CustomInputHandler(Keyboard kb)
-    {
-        if (kb.wKey.wasPressedThisFrame)
-        {
-            machine.ChangeState(player.Slide);
-        }
-    }
-
 }

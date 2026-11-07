@@ -34,12 +34,13 @@ public class SlideState : PlayerState
             if (player.JumpPressed) 
                 machine.ChangeState(player.Jump);
             
+            else if (player.skid)
+                machine.ChangeState(player.Skid);
+        
             // if the player is not moving from slide, make them stand up
             else if (player.Rb.linearVelocity.x == 0)
                 machine.ChangeState(player.Idle);
         }
-
-
     }
 
     public override void VariableAnimationChange()
