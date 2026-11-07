@@ -11,8 +11,12 @@ public class FallState : PlayerState
     {
         if(player.IsGrounded())
         {
+            
+            if (player.Sliding) 
+                machine.ChangeState(player.Slide);
+
             // if there is player input, run state
-            if (player.MoveInput != 0)
+            else if (player.MoveInput != 0)
                 machine.ChangeState(player.Run);
             
             // if jump is being pressed, jump (:
@@ -35,6 +39,7 @@ public class FallState : PlayerState
     public override void VariableAnimationChange()
     {
         if (player.ChangeFallAnimation()) player.Anim.Play("Fall");
+        player.FlipToFaceInput();
     }
 
 }

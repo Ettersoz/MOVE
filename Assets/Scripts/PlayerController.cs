@@ -1,6 +1,7 @@
 using System;
 using System.Data.Common;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
@@ -35,9 +36,13 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 8f;
     public float jumpForce = 14f;
-    public float initialJumpVelocity = 0f;
+    public float initialJumpVelocityX = 0f;
+    public float slideForce = 5f;
+    public float currentSlideVelocity = 0f;
     public float strafeSpeed = .5f; 
     public float minStrafeSpeed = 4f;
+    float slideDampeningTime = 1.5f; // the time at which the slide dampening increases
+    float slideMaxSpeedTime = .5f;
 
     [Header("Ground Check")]
     public Transform groundCheck; // empty child object placed at the player 
@@ -55,10 +60,12 @@ public class PlayerController : MonoBehaviour
     public RunState Run {get; private set;}
     public JumpState Jump {get; private set;}
     public FallState Fall {get; private set;}
+    public SlideState Slide {get; private set;}
 
     // Input, read once per frame so states don't each poll input
     public float MoveInput { get; private set; } // -1, 0 ,1 
     public bool JumpPressed { get; private set; }
+    public bool Sliding { get; private set; }
     
     void Awake()
     {
@@ -71,6 +78,7 @@ public class PlayerController : MonoBehaviour
         Run = new RunState(this, StateMachine);
         Jump = new JumpState(this, StateMachine);
         Fall = new FallState(this, StateMachine);
+        Slide = new SlideState(this, StateMachine);
     }
 
     void Start()
@@ -82,8 +90,9 @@ public class PlayerController : MonoBehaviour
     {
         MoveInput = 0f;
         JumpPressed = false;
+        Sliding = false;
 
-
+        // assign keyboard input to the player controller 
         var kb = Keyboard.current;
         if (kb == null) return;
 
@@ -97,22 +106,25 @@ public class PlayerController : MonoBehaviour
         if (kb.dKey.isPressed) MoveInput += 1f;
 
         // jump height, set true
-        if (kb.wKey.wasPressedThisFrame) JumpPressed = true;
+        if (kb.spaceKey.wasPressedThisFrame || kb.wKey.wasPressedThisFrame) JumpPressed = true;
 
-
-        // both inputs for controllers
-        // MoveInput = Input.GetAxisRaw("Horizontal");
-        // JumpPressed = Input.GetButtonDown("Jump");
+        if (kb.shiftKey.isPressed) Sliding = true;
 
         // once controller support is added, this will be necissary 
         MoveInput = Mathf.Clamp(MoveInput, -1f, 1f);
 
-        FlipToFaceInput();
+        // flip based on what direction the player is trying to input movements
+        // this needs exclusion/update for slide state          
 
+        // we run logic update to check for any state switches
         StateMachine.CurrentState.LogicUpdate();
+
+        // purley for changing animations for jump state
         StateMachine.CurrentState.VariableAnimationChange();
+
     }
 
+    // applies whatever states physics have been defined
     void FixedUpdate()
     {
         StateMachine.CurrentState.PhysicsUpdate();
@@ -131,21 +143,25 @@ public class PlayerController : MonoBehaviour
         return Rb.linearVelocity.y < -.01f;
     }
 
+    // phsyics for horizontal movement (running) for the running state
     public void ApplyHorizontalMovement()
     {
         Rb.linearVelocity = new UnityEngine.Vector2(MoveInput * moveSpeed, Rb.linearVelocity.y);
     }
 
+    // phsyics for vertical movement (jumping) for the jump state
     public void ApplyJumpMovement()
     {
+        // check for a Jump Press, as this will run every frame in physicsUpdate
         if (JumpPressed) 
         { 
             Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x, jumpForce);
-            initialJumpVelocity = Rb.linearVelocity.x;
+            // initial jump velocity saved for strafing while falling 
+            initialJumpVelocityX = Rb.linearVelocity.x; 
         }
     }
 
-    void FlipToFaceInput()
+    public void FlipToFaceInput()
     {
         // only flip when there is an imput 
         if (MoveInput != 0)
@@ -160,20 +176,50 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
     }
 
+
+    // slide physics for the slide state
+    public void ApplySlide(float initialMoveInput, float maxSlideTimer)
+    {
+        float slideDampening = 1.02f; // the rate at which the slide recreases 
+        // increase dampening when slide velocity is low (thoretically)
+
+        if (maxSlideTimer > slideDampeningTime) slideDampening = 1.1f;
+
+        // stop sliding when velocity is very low
+        if (currentSlideVelocity <= 1) currentSlideVelocity = 0;
+        // apply slide at a current rate right now 
+
+        if (maxSlideTimer > slideMaxSpeedTime) 
+        {
+            currentSlideVelocity = currentSlideVelocity / slideDampening; // reduce the slide velocity by the dampening value
+        }
+
+        Rb.linearVelocity = new UnityEngine.Vector2(initialMoveInput * currentSlideVelocity, Rb.linearVelocity.y);
+    }
+
     // function to allow strafing when falling
     public void ApplyStrafe()
     {
-        float strafeCap = Math.Max(Math.Abs(initialJumpVelocity), minStrafeSpeed);
+        // determines the strafe cap between the initial horizontal movement speed 
+        // and the minimum strafe speed the player should achieve
+        float strafeCap = Math.Max(Math.Abs(initialJumpVelocityX), minStrafeSpeed);
 
-        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * .5f)) <= strafeCap)
-            Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x + (MoveInput * .5f), Rb.linearVelocity.y);
+        float newVelocityX = 0f;
+
+        // The player can only strafe up to the calculated cap 
+        if (Math.Abs(Rb.linearVelocity.x + (MoveInput * strafeSpeed)) > strafeCap) 
+            newVelocityX = strafeCap * MoveInput;
+        else
+            newVelocityX = Rb.linearVelocity.x + (MoveInput * strafeSpeed);
+        
+        Rb.linearVelocity = new UnityEngine.Vector2(newVelocityX, Rb.linearVelocity.y);
     }
-
     public bool ChangeFallAnimation()
     {
         float threshold = 5f;
         return (Rb.linearVelocity.y < threshold && Rb.linearVelocity.y > 0) || (Rb.linearVelocity.y < -threshold);
     }
+
 }
 //     [SerializeField] private float moveSpeed = 6f;
 //     [SerializeField] private float jumpVelocity = 12f;

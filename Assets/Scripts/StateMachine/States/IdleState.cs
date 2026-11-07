@@ -10,11 +10,17 @@ public class IdleState : PlayerState
     // the key word "base" refers to the base object "PlayerState" 
     public IdleState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
 
+    public string[] IdleAnims = { "Idle1", "Idle2", "Idle3" };
+
     // the animator must be named exactly "Idle" 
     // the override keyword "overrides" the definition of the function in the superclass
     // PlayerState. This allows us to make specific changes to the class function 
     // base on the subclass we are making
-    public override void Enter() => player.Anim.Play("Idle");
+    public override void Enter()
+    {
+        string anim = IdleAnims[Random.Range(0, IdleAnims.Length)];
+        player.Anim.Play(anim);  
+    } 
 
     public override void LogicUpdate()
     {
@@ -25,6 +31,11 @@ public class IdleState : PlayerState
         // if jump was pressed -> we are jumping, i.e switch states
         else if (player.JumpPressed)
             machine.ChangeState(player.Jump);
+
+
+        // for now this bugs out, but I think it would be cute if the player just sat if you entered slide in idle. 
+        //else if (player.Sliding) 
+            //machine.ChangeState(player.Slide);
 
         // if move input is not 0 -> we are runinng, i.e switch states
         else if (player.MoveInput != 0)
@@ -38,5 +49,10 @@ public class IdleState : PlayerState
         // copy the CURRENT Y back in unchanged, so gravity keeps working normally.
         // you can't just set .x on its own; unity requires assinging a whole Vector 2
         player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
+    }
+
+    public override void VariableAnimationChange()
+    {
+        player.FlipToFaceInput();
     }
 }
