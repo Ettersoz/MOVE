@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
     public JumpState Jump {get; private set;}
     public FallState Fall {get; private set;}
     public SlideState Slide {get; private set;}
+    public SkidState Skid {get; private set;}
 
     // Input, read once per frame so states don't each poll input
     public float MoveInput { get; private set; } // -1, 0 ,1 
@@ -79,6 +80,7 @@ public class PlayerController : MonoBehaviour
         Jump = new JumpState(this, StateMachine);
         Fall = new FallState(this, StateMachine);
         Slide = new SlideState(this, StateMachine);
+        Skid = new SkidState(this, StateMachine);
     }
 
     void Start()
@@ -106,7 +108,7 @@ public class PlayerController : MonoBehaviour
         if (kb.dKey.isPressed) MoveInput += 1f;
 
         // jump height, set true
-        if (kb.spaceKey.wasPressedThisFrame || kb.wKey.wasPressedThisFrame) JumpPressed = true;
+        if (kb.spaceKey.wasPressedThisFrame) JumpPressed = true;
 
         if (kb.shiftKey.isPressed) Sliding = true;
 
@@ -119,9 +121,13 @@ public class PlayerController : MonoBehaviour
         // we run logic update to check for any state switches
         StateMachine.CurrentState.LogicUpdate();
 
-        // purley for changing animations for jump state
+        // handles any custom animation differences
+        // flip for input, variable jump input, slide input
         StateMachine.CurrentState.VariableAnimationChange();
 
+        // handles any custom inputs per state
+        // "w" in slide enters skid
+        StateMachine.CurrentState.CustomInputHandler(kb);
     }
 
     // applies whatever states physics have been defined
@@ -218,6 +224,13 @@ public class PlayerController : MonoBehaviour
     {
         float threshold = 5f;
         return (Rb.linearVelocity.y < threshold && Rb.linearVelocity.y > 0) || (Rb.linearVelocity.y < -threshold);
+    }
+
+    public void ApplySkid()
+    {
+        Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x / 1.3f, Rb.linearVelocity.y);
+        // if velocity is low enough, just set 0, reduce computation, increase consistency
+        if (Math.Abs(Rb.linearVelocity.x) <= 0.1) Rb.linearVelocity = new UnityEngine.Vector2(0, Rb.linearVelocity.y);
     }
 
 }

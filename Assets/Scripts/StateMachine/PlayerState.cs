@@ -1,4 +1,4 @@
-using Unity.Collections.Tests.CoreCLR.TestJobs;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 public abstract class PlayerState 
@@ -28,5 +28,6 @@ public abstract class PlayerState
     // apply velocity/forces here so phyisics stays framrate-independent
     public virtual void PhysicsUpdate() {}
 
+    public virtual void CustomInputHandler(Keyboard kb) {}
     public virtual void VariableAnimationChange() {}
 }

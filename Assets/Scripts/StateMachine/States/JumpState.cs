@@ -28,6 +28,9 @@ public class JumpState : PlayerState
             if (player.MoveInput != 0) 
                 machine.ChangeState(player.Run);
 
+            if (player.MoveInput == 0 && player.Rb.linearVelocity.x != 0)
+                machine.ChangeState(player.Skid);
+
             // if move input == 0 -> change state to idle
             else if (player.MoveInput == 0)
                 machine.ChangeState(player.Idle);
