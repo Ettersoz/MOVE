@@ -14,7 +14,7 @@ public class FallState : PlayerState
         if(player.IsGrounded())
         {
             
-            PlayerState queued = player.removeQueuedState();
+            PlayerState queued = player.useQueuedState();
 
             if (queued != null)
                 machine.ChangeState(queued);
