@@ -150,7 +150,7 @@ public class PlayerController : MonoBehaviour
             TryQueueInput(Slide);
         }
 
-        if (kb.wKey.isPressed && StateMachine.CurrentState == Slide) skid = true; 
+        if (kb.wKey.isPressed) skid = true; 
 
         // once controller support is added, this will be necissary 
         MoveInput = Mathf.Clamp(MoveInput, -1f, 1f);
