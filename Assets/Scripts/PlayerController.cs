@@ -114,12 +114,17 @@ public class PlayerController : MonoBehaviour
 
     void HandleInputs()
     {   
-        queueTimer += Time.deltaTime;
-        if (queueTimer > queueDuration)
+        // handles our queue timer completely
+        if (queueTimer > 0f)
         {
+            Debug.Log("QueueTimer: " + queueTimer);
+            Debug.Log("QueuedState: " + queuedState);
             queueTimer -= Time.deltaTime;
+            // removes input from queue if it has expired
             if(queueTimer <= 0f) queuedState = null;
         }
+
+
         JumpPressed = false;
         Sliding = false;
         skid = false;
@@ -185,6 +190,7 @@ public class PlayerController : MonoBehaviour
 
     public PlayerState useQueuedState()
     {
+        Debug.Log("Using Queued State: " + queuedState);
         PlayerState state = queuedState;
         queuedState = null;
         return state;
