@@ -22,4 +22,14 @@ public class PlayerStateMachine
         CurrentState = newState;
         CurrentState.Enter();
     }
+
+    public PlayerState ReturnedStoredState()
+    {
+        return StoredState;
+    }
+
+    public void SetStoredState(PlayerState queuedState)
+    {
+        StoredState = queuedState;
+    }
 }

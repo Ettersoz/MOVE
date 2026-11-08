@@ -41,9 +41,14 @@ public class PlayerController : MonoBehaviour
     public float currentSlideVelocity = 0f;
     public float strafeSpeed = .5f; 
     public float minStrafeSpeed = 4f;
-    float slideDampeningTime = 1.5f; // the time at which the slide dampening increases
-    float slideMaxSpeedTime = .5f;
     public bool skid = false;
+
+    [Header("Timers")]
+    public float slideDampeningTime = 1.5f; // the time at which the slide dampening increases
+    public float slideMaxSpeedTime = .5f;
+    public float queueTimer = 0f;
+    public float queueDuration = .5f;
+    
 
     [Header("Ground Check")]
     public Transform groundCheck; // empty child object placed at the player 
@@ -53,6 +58,8 @@ public class PlayerController : MonoBehaviour
     // components states need access too 
     public Rigidbody2D Rb { get; private set;}
     public Animator Anim { get; private set;}
+
+    private PlayerState queuedState;
 
     // State machine + one instance of eatch state
     // states are created once and reused, not re-created on every transition 
@@ -106,8 +113,13 @@ public class PlayerController : MonoBehaviour
     // ####################################################
 
     void HandleInputs()
-    {
-        MoveInput = 0f;
+    {   
+        queueTimer += Time.deltaTime;
+        if (queueTimer > queueDuration)
+        {
+            queueTimer -= Time.deltaTime;
+            if(queueTimer <= 0f) queuedState = null;
+        }
         JumpPressed = false;
         Sliding = false;
         skid = false;
@@ -126,14 +138,24 @@ public class PlayerController : MonoBehaviour
         if (kb.dKey.isPressed) MoveInput += 1f;
 
         // jump height, set true
-        if (kb.spaceKey.wasPressedThisFrame) JumpPressed = true;
+        if (kb.spaceKey.wasPressedThisFrame)
+        {
+            JumpPressed = true;
+            TryQueueInput(Jump);
+        }
 
-        if (kb.shiftKey.isPressed) Sliding = true;
+        if (kb.shiftKey.wasPressedThisFrame)
+        {
+            Sliding = true;
+            TryQueueInput(Slide);
+        }
 
         if (kb.wKey.isPressed && StateMachine.CurrentState == Slide) skid = true; 
 
         // once controller support is added, this will be necissary 
         MoveInput = Mathf.Clamp(MoveInput, -1f, 1f);
+
+        
     }
 
     // applies whatever states physics have been defined
@@ -152,6 +174,38 @@ public class PlayerController : MonoBehaviour
     public bool IsFalling()
     {
         return Rb.linearVelocity.y < -.01f;
+    }
+
+    // ok i need to make a function that stores a users input if 
+    // they are in particular states. I should probably make a getter 
+    // and a setter function for it. one function is called from 
+    // the state saying, HEY, the player just pressed this button
+    // save this button press! 
+    // the other function should be called on entry that says 
+    // hey, I'm entering this state, check and see if there were any 
+    // saved button presses for me. I'm thinking now that the states
+    // can't actually see the keyboard presses, so it must be set 
+    // by the player controller. what we can do is still check the 
+    // keyboard pressed in the entrance of a player state. 
+    // single variable to store the queued input i think is the play
+    // we don't need to execute multiple movements with a queue, 
+    // just one single, and it can be overwritten if a new input is queued
+    // we just free it once the queue timer expires
+    
+    public void TryQueueInput(PlayerState queuedState)
+    {
+        if (StateMachine.CurrentState.CanQueueInput) return; 
+        
+        StateMachine.SetStoredState(queuedState);
+        queueTimer = queueDuration;
+        
+    }
+
+    public PlayerState removeQueuedState()
+    {
+        PlayerState state = queuedState;
+        queuedState = null;
+        return state;
     }
 
     // ####################################################

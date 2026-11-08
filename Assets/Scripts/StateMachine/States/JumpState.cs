@@ -4,6 +4,8 @@ public class JumpState : PlayerState
 {
     public JumpState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
 
+    public override bool CanQueueInput => true;
+
     public override void Enter() 
     {
         player.ApplyJumpMovement();

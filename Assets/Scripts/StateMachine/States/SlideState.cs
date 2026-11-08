@@ -7,6 +7,8 @@ public class SlideState : PlayerState
 
     float maxSlideTimer = 0f;
 
+    public override bool CanQueueInput => true;
+
     public SlideState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
 
     public override void Enter()

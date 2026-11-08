@@ -13,6 +13,8 @@ public abstract class PlayerState
         this.machine = machine;
     }
 
+    public virtual bool CanQueueInput => false;
+
     // runs once when we swtih into this state 
     // start animation or impulse, like jump 
     public virtual void Enter() {}
