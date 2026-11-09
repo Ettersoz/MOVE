@@ -211,12 +211,9 @@ public class PlayerController : MonoBehaviour
     public void ApplyJumpMovement()
     {
         // check for a Jump Press, as this will run every frame in physicsUpdate
-        if (JumpPressed) 
-        { 
-            Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x, jumpForce);
-            // initial jump velocity saved for strafing while falling 
-            initialJumpVelocityX = Rb.linearVelocity.x; 
-        }
+        Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x, jumpForce);
+        // initial jump velocity saved for strafing while falling 
+        initialJumpVelocityX = Rb.linearVelocity.x; 
     }
 
     // slide physics for the slide state
