@@ -14,7 +14,11 @@ public class SlideState : PlayerState
     public override void Enter()
     { 
         // store what direciton the player is going in when entering the slide state
-        initialMoveInput = player.MoveInput;
+        // if there is no direction being held, if so, use the flip to face input value 
+        // this ensures the player gets momentum in the direction they are facing
+        initialMoveInput = player.MoveInput != 0
+            ? Mathf.Sign(player.MoveInput)
+            : Mathf.Sign(player.transform.localScale.x);
         // play slide animation, update to be variable on the speed of the slide
         player.Anim.Play("Slide");  
         // set the initial slide velocity to the player's slide force
@@ -28,7 +32,7 @@ public class SlideState : PlayerState
         maxSlideTimer += Time.deltaTime;
 
         // if the player is falling, change to the fall state
-        if (player.IsFalling()) machine.ChangeState(player.Fall);
+        if (!player.IsGrounded()) machine.ChangeState(player.Fall);
 
         // currently you can only jump out of a slide. may change this. 
         else if (player.IsGrounded())
