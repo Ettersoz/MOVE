@@ -4,6 +4,8 @@ public class JumpState : PlayerState
 {
     public JumpState(PlayerController p, PlayerStateMachine m) : base(p, m) {}
 
+    public override bool CanQueueInput => true;
+
     public override void Enter() 
     {
         player.ApplyJumpMovement();
@@ -27,6 +29,9 @@ public class JumpState : PlayerState
             // move input != 0 -> change state to run 
             if (player.MoveInput != 0) 
                 machine.ChangeState(player.Run);
+
+            if (player.MoveInput == 0 && player.Rb.linearVelocity.x != 0)
+                machine.ChangeState(player.Skid);
 
             // if move input == 0 -> change state to idle
             else if (player.MoveInput == 0)

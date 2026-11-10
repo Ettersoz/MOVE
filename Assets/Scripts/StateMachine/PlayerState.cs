@@ -13,6 +13,8 @@ public abstract class PlayerState
         this.machine = machine;
     }
 
+    public virtual bool CanQueueInput => false;
+
     // runs once when we swtih into this state 
     // start animation or impulse, like jump 
     public virtual void Enter() {}
@@ -27,6 +29,7 @@ public abstract class PlayerState
     // called from PlayerController.FixedUpdate()
     // apply velocity/forces here so phyisics stays framrate-independent
     public virtual void PhysicsUpdate() {}
-
+    // called from PlayerController.Update()
+    // allows for each state to have variable animations
     public virtual void VariableAnimationChange() {}
 }
