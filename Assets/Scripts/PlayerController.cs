@@ -206,6 +206,24 @@ public class PlayerController : MonoBehaviour
         Rb.linearVelocity = new UnityEngine.Vector2(MoveInput * moveSpeed, Rb.linearVelocity.y);
     }
 
+    
+    /*
+    first block comment W 
+    I want to add variable jump height to this game. 
+    i assume the way this is done usually is with a continual additional velocity while the button is 
+    held down, with an upper and a lower bound. there is a minimum jump height, and a maximum jump height
+    and the players timing will determine the hights inbetween
+    so we have two variables
+     - minmumum jump height 
+     - maximum jump height 
+     - button press timer
+    when the button press is short enough, i.e <= button press timer
+     - the player achieves the smallest jump height. 
+     - i think the first thing we should do is set up this timing interval. 
+    start by setting up a timer variable. 
+    */
+
+
 
     // phsyics for vertical movement (jumping) for the jump state
     public void ApplyJumpMovement()
