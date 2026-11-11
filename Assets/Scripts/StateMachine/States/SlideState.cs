@@ -47,17 +47,7 @@ public class SlideState : PlayerState
             else if (player.Rb.linearVelocity.x == 0)
                 machine.ChangeState(player.Idle);
         }
-    }
-
-    // this doesn't feel right to me 
-    // what i want is not necissarily an upper cap,  
-    // i might want this to be weighted heavier the faster 
-    // the player is going, so the last couple of percetage points cover a higher range
-    // maybe something like remove everything above the walk speed, divde it by 3, and add that onto the 
-    // total clamp, it makes the animation speed far more variable, but I think it will be noticable for 
-    // people actually going variable speeds. 
-    // i want any below m
-        
+    }   
 
     public override void VariableAnimationChange()
     {
