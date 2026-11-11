@@ -56,15 +56,25 @@ public class SlideState : PlayerState
     // maybe something like remove everything above the walk speed, divde it by 3, and add that onto the 
     // total clamp, it makes the animation speed far more variable, but I think it will be noticable for 
     // people actually going variable speeds. 
+    // i want any below m
+        
 
     public override void VariableAnimationChange()
     {
         // slide percent is the percentage speed player is moving compared to the slide force. 
-        float speedPercent = Mathf.Abs(player.Rb.linearVelocity.x) / (player.slideForce);
+        float speed = Mathf.Abs(player.Rb.linearVelocity.x);
+ 
+        float speedPercent = speed / player.moveSpeed;
 
-        speedPercent = Mathf.Clamp(speedPercent, 0f, 2.5f);
+        float additionalSpeed = 0f;
 
-        player.Anim.SetFloat("SlideSpeed", speedPercent);
+        speedPercent = Mathf.Clamp(speedPercent, 0f, 1.5f);
+
+        if (speed > player.moveSpeed) 
+            additionalSpeed = (speed - player.moveSpeed) / 30;
+            additionalSpeed = Mathf.Clamp(additionalSpeed, 0f, 1.5f);
+    
+        player.Anim.SetFloat("SlideSpeed", speedPercent + additionalSpeed);
     }
 
     // physics update for the slide movement
