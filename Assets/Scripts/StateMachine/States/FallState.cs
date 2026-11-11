@@ -37,6 +37,7 @@ public class FallState : PlayerState
     public override void PhysicsUpdate()
     {
         player.ApplyStrafe();
+        player.CustomJumpGravity();
     }
 
     public override void VariableAnimationChange()
