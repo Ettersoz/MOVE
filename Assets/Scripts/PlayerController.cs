@@ -165,6 +165,7 @@ public class PlayerController : MonoBehaviour
         if (kb.spaceKey.wasReleasedThisFrame)
         {
             //Debug.Log("variableJumpTimer: " + variableJumpTimer);
+            Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x, Rb.linearVelocity.y * .5f);
             JumpPressed = false;
         }
 

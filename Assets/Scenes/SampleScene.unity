@@ -318,7 +318,7 @@ MonoBehaviour:
   moveSpeed: 8
   jumpForce: 10
   initialJumpVelocityX: 0
-  slideForce: 5
+  slideForce: 2
   currentSlideVelocity: 5
   strafeSpeed: 0.5
   minStrafeSpeed: 4
@@ -327,7 +327,7 @@ MonoBehaviour:
   maximumJumpTimer: 0.4
   highGravityMultiplier: 3
   lowGravityMultiplier: 2.5
-  terminalVelocity: 4
+  terminalVelocity: 15
   slideDampeningTime: 1.5
   slideMaxSpeedTime: 0.5
   queueTimer: 0

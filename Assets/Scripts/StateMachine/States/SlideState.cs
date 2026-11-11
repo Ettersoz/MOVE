@@ -53,7 +53,7 @@ public class SlideState : PlayerState
     {
         float speedPercent = Mathf.Abs(player.Rb.linearVelocity.x) / (player.slideForce);
 
-        speedPercent = Mathf.Clamp(speedPercent, 0f, 2f);
+        speedPercent = Mathf.Clamp(speedPercent, 0f, 3f);
 
         player.Anim.SetFloat("SlideSpeed", speedPercent);
     }
