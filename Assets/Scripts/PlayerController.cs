@@ -83,7 +83,8 @@ public class PlayerController : MonoBehaviour
     // Input, read once per frame so states don't each poll input
     public float MoveInput { get; private set; } // -1, 0 ,1 
     public bool JumpPressed { get; private set; }
-    public bool Sliding { get; private set; }
+    public bool SlidePressed { get; private set; }
+    public bool SkidPressed { get; private set; }
     
     void Awake()
     {
@@ -139,14 +140,13 @@ public class PlayerController : MonoBehaviour
             variableJumpTimer -= Time.deltaTime;
         }
 
-        Sliding = false;
-        skid = false;
+        SlidePressed = false;
+        SkidPressed = false;
+        MoveInput = 0f;
 
         // assign keyboard input to the player controller 
         var kb = Keyboard.current;
         if (kb == null) return;
-
-        MoveInput = 0f;
 
         // this is where all the inputs will be executed? i believe
         if (kb.aKey.isPressed) MoveInput -= 1f;
@@ -171,11 +171,11 @@ public class PlayerController : MonoBehaviour
 
         if (kb.shiftKey.wasPressedThisFrame)
         {
-            Sliding = true;
+            SlidePressed = true;
             TryQueueInput(Slide);
         }
 
-        if (kb.wKey.isPressed) skid = true; 
+        if (kb.wKey.isPressed) SkidPressed = true; 
 
         //Debug.Log("JumpPressed: " + JumpPressed);
 
@@ -296,7 +296,7 @@ public class PlayerController : MonoBehaviour
 
     public void ApplySkid()
     {
-        Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x / 1.3f, Rb.linearVelocity.y);
+        Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x * .8f, Rb.linearVelocity.y);
         // if velocity is low enough, just set 0, reduce computation, increase consistency
         if (Math.Abs(Rb.linearVelocity.x) <= 0.1) Rb.linearVelocity = new UnityEngine.Vector2(0, Rb.linearVelocity.y);
     }

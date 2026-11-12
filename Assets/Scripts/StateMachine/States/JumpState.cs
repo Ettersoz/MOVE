@@ -23,7 +23,7 @@ public class JumpState : PlayerState
         else if (player.IsGrounded() && player.Rb.linearVelocity.y <= .01f) 
         {
             // player.Sliding == true -> change state to slide
-            if (player.Sliding) 
+            if (player.SlidePressed) 
                 machine.ChangeState(player.Slide); 
 
             // move input != 0 -> change state to run 

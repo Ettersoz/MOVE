@@ -28,7 +28,7 @@ public class RunState : PlayerState
         else if (player.JumpPressed) // if jump pressed -> change the state to jump
             machine.ChangeState(player.Jump);
 
-        else if (player.Sliding && Mathf.Abs(player.Rb.linearVelocity.x) > 3 )//&& slideTimer > 0.5f) // if slide is active -> change state to slide         
+        else if (player.SlidePressed && Mathf.Abs(player.Rb.linearVelocity.x) > 3 )//&& slideTimer > 0.5f) // if slide is active -> change state to slide
             machine.ChangeState(player.Slide);  
         
         else if (player.MoveInput == 0) // if no move input -> change state to idle

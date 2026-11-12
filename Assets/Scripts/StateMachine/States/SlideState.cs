@@ -40,7 +40,7 @@ public class SlideState : PlayerState
             if (player.JumpPressed) 
                 machine.ChangeState(player.Jump);
             
-            else if (player.skid)
+            else if (player.SkidPressed)
                 machine.ChangeState(player.Skid);
         
             // if the player is not moving from slide, make them stand up
