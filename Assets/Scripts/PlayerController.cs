@@ -43,11 +43,20 @@ public class PlayerController : MonoBehaviour
     public float minStrafeSpeed = 4f;
     public bool skid = false;
 
+    [Header("Variable Jump Values")]
+    public float minimumJumpTimer = .08f;
+    public float maximumJumpTimer = .4f;
+    public float highGravityMultiplier = 3f;
+    public float lowGravityMultiplier = 2f;
+    public float terminalVelocity = 5f;
+
     [Header("Timers")]
     public float slideDampeningTime = 1.5f; // the time at which the slide dampening increases
     public float slideMaxSpeedTime = .5f;
     public float queueTimer = 0f;
     public float queueDuration = .5f;
+    public float variableJumpTimer = 0f;
+    public float variableJumpDuration = .5f;
     
 
     [Header("Ground Check")]
@@ -74,7 +83,8 @@ public class PlayerController : MonoBehaviour
     // Input, read once per frame so states don't each poll input
     public float MoveInput { get; private set; } // -1, 0 ,1 
     public bool JumpPressed { get; private set; }
-    public bool Sliding { get; private set; }
+    public bool SlidePressed { get; private set; }
+    public bool SkidPressed { get; private set; }
     
     void Awake()
     {
@@ -117,24 +127,26 @@ public class PlayerController : MonoBehaviour
         // handles our queue timer completely
         if (queueTimer > 0f)
         {
-            Debug.Log("QueueTimer: " + queueTimer);
-            Debug.Log("QueuedState: " + queuedState);
+            //Debug.Log("QueueTimer: " + queueTimer);
+            //Debug.Log("QueuedState: " + queuedState);
             queueTimer -= Time.deltaTime;
             // removes input from queue if it has expired
             if(queueTimer <= 0f) queuedState = null;
         }
 
+        // handles our variable jump timer completely
+        if (variableJumpTimer > 0f)
+        {
+            variableJumpTimer -= Time.deltaTime;
+        }
 
-        JumpPressed = false;
-        Sliding = false;
-        skid = false;
+        SlidePressed = false;
+        SkidPressed = false;
+        MoveInput = 0f;
 
         // assign keyboard input to the player controller 
         var kb = Keyboard.current;
         if (kb == null) return;
-
-        MoveInput = 0f;
-
 
         // this is where all the inputs will be executed? i believe
         if (kb.aKey.isPressed) MoveInput -= 1f;
@@ -145,17 +157,27 @@ public class PlayerController : MonoBehaviour
         // jump height, set true
         if (kb.spaceKey.wasPressedThisFrame)
         {
-            JumpPressed = true;
+            JumpPressed = true; 
+            //variableJumpTimer = .5f;
             TryQueueInput(Jump);
+        }
+
+        if (kb.spaceKey.wasReleasedThisFrame)
+        {
+            //Debug.Log("variableJumpTimer: " + variableJumpTimer);
+            Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x, Rb.linearVelocity.y * .5f);
+            JumpPressed = false;
         }
 
         if (kb.shiftKey.wasPressedThisFrame)
         {
-            Sliding = true;
+            SlidePressed = true;
             TryQueueInput(Slide);
         }
 
-        if (kb.wKey.isPressed) skid = true; 
+        if (kb.wKey.isPressed) SkidPressed = true; 
+
+        //Debug.Log("JumpPressed: " + JumpPressed);
 
         // once controller support is added, this will be necissary 
         MoveInput = Mathf.Clamp(MoveInput, -1f, 1f);
@@ -190,7 +212,7 @@ public class PlayerController : MonoBehaviour
 
     public PlayerState useQueuedState()
     {
-        Debug.Log("Using Queued State: " + queuedState);
+        //Debug.Log("Using Queued State: " + queuedState);
         PlayerState state = queuedState;
         queuedState = null;
         return state;
@@ -206,30 +228,30 @@ public class PlayerController : MonoBehaviour
         Rb.linearVelocity = new UnityEngine.Vector2(MoveInput * moveSpeed, Rb.linearVelocity.y);
     }
 
-    
-    /*
-    first block comment W 
-    I want to add variable jump height to this game. 
-    i assume the way this is done usually is with a continual additional velocity while the button is 
-    held down, with an upper and a lower bound. there is a minimum jump height, and a maximum jump height
-    and the players timing will determine the hights inbetween
-    so we have two variables
-     - minmumum jump height 
-     - maximum jump height 
-     - button press timer
-    when the button press is short enough, i.e <= button press timer
-     - the player achieves the smallest jump height. 
-     - i think the first thing we should do is set up this timing interval. 
-    start by setting up a timer variable. 
-    */
-
-
+    public void CustomJumpGravity()
+    {
+        if (Rb.linearVelocity.y < 0f)
+            // increase gravity while falling
+            Rb.gravityScale = highGravityMultiplier;
+        else if (Rb.linearVelocity.y > 0f && !JumpPressed)
+        {
+            //Debug.Log("Tapering off the top of the jump");
+            // taper off the top of the jump
+            Rb.gravityScale = lowGravityMultiplier;
+        }
+        else 
+            // use default gravity while rising with the jump button held
+            Rb.gravityScale = 1.5f;
+    }
 
     // phsyics for vertical movement (jumping) for the jump state
     public void ApplyJumpMovement()
     {
-        // check for a Jump Press, as this will run every frame in physicsUpdate
+        
         Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x, jumpForce);
+        
+        // check for a Jump Press, as this will run every frame in physicsUpdate
+        //Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x, jumpForce);
         // initial jump velocity saved for strafing while falling 
         initialJumpVelocityX = Rb.linearVelocity.x; 
     }
@@ -274,9 +296,19 @@ public class PlayerController : MonoBehaviour
 
     public void ApplySkid()
     {
-        Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x / 1.3f, Rb.linearVelocity.y);
-        // if velocity is low enough, just set 0, reduce computation, increase consistency
-        if (Math.Abs(Rb.linearVelocity.x) <= 0.1) Rb.linearVelocity = new UnityEngine.Vector2(0, Rb.linearVelocity.y);
+        Debug.Log(Rb.linearVelocity.x);
+        Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x / 1.05f, Rb.linearVelocity.y);
+        Debug.Log(Rb.linearVelocity.x);
+    }
+
+    public bool SkipSkid()
+    {
+        if (Rb.linearVelocity.x <= 2)
+        {
+            Rb.linearVelocity = new UnityEngine.Vector2(0, Rb.linearVelocity.y);
+            return true;
+        }
+        return false;
     }
 
     // ####################################################

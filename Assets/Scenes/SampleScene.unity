@@ -316,12 +316,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 8
-  jumpForce: 14
+  jumpForce: 10
   initialJumpVelocityX: 0
-  slideForce: 5
+  slideForce: 2
   currentSlideVelocity: 5
   strafeSpeed: 0.5
   minStrafeSpeed: 4
+  skid: 0
+  minimumJumpTimer: 0.08
+  maximumJumpTimer: 0.4
+  highGravityMultiplier: 3
+  lowGravityMultiplier: 2.5
+  terminalVelocity: 15
+  slideDampeningTime: 1.5
+  slideMaxSpeedTime: 0.5
+  queueTimer: 0
+  queueDuration: 0.5
+  variableJumpTimer: 0
+  variableJumpDuration: 0.5
   groundCheck: {fileID: 1364627569}
   groundCheckRadius: 0.1
   groundLayer:

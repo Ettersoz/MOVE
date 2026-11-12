@@ -21,7 +21,7 @@ public class FallState : PlayerState
             // if jump is being pressed, jump (:
             else if (player.JumpPressed) 
                 machine.ChangeState(player.Jump);
-            else if (player.Sliding) 
+            else if (player.SlidePressed) 
                 machine.ChangeState(player.Slide);
             // if there is player input, run state
             else if (player.MoveInput != 0)
@@ -37,6 +37,7 @@ public class FallState : PlayerState
     public override void PhysicsUpdate()
     {
         player.ApplyStrafe();
+        player.CustomJumpGravity();
     }
 
     public override void VariableAnimationChange()

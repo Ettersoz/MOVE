@@ -23,7 +23,7 @@ public class JumpState : PlayerState
         else if (player.IsGrounded() && player.Rb.linearVelocity.y <= .01f) 
         {
             // player.Sliding == true -> change state to slide
-            if (player.Sliding) 
+            if (player.SlidePressed) 
                 machine.ChangeState(player.Slide); 
 
             // move input != 0 -> change state to run 
@@ -43,7 +43,8 @@ public class JumpState : PlayerState
     // physics update for the strafe movement
     public override void PhysicsUpdate()
     {
-        player.ApplyStrafe();    
+        player.ApplyStrafe();
+        player.CustomJumpGravity();
     }
 
     // this handles the variable animation changes for the jump state

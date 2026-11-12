@@ -40,22 +40,31 @@ public class SlideState : PlayerState
             if (player.JumpPressed) 
                 machine.ChangeState(player.Jump);
             
-            else if (player.skid)
+            else if (player.SkidPressed)
                 machine.ChangeState(player.Skid);
         
             // if the player is not moving from slide, make them stand up
             else if (player.Rb.linearVelocity.x == 0)
                 machine.ChangeState(player.Idle);
         }
-    }
+    }   
 
     public override void VariableAnimationChange()
     {
-        float speedPercent = Mathf.Abs(player.Rb.linearVelocity.x) / (player.slideForce);
+        // slide percent is the percentage speed player is moving compared to the slide force. 
+        float speed = Mathf.Abs(player.Rb.linearVelocity.x);
+ 
+        float speedPercent = speed / player.moveSpeed;
 
-        speedPercent = Mathf.Clamp(speedPercent, 0f, 2f);
+        float additionalSpeed = 0f;
 
-        player.Anim.SetFloat("SlideSpeed", speedPercent);
+        speedPercent = Mathf.Clamp(speedPercent, 0f, 1.5f);
+
+        if (speed > player.moveSpeed) 
+            additionalSpeed = (speed - player.moveSpeed) / 30;
+            additionalSpeed = Mathf.Clamp(additionalSpeed, 0f, 1.5f);
+    
+        player.Anim.SetFloat("SlideSpeed", speedPercent + additionalSpeed);
     }
 
     // physics update for the slide movement
