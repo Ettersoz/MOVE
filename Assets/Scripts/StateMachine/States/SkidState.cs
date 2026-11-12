@@ -7,8 +7,9 @@ public class SkidState : PlayerState
 
     public override void Enter()
     {
-   
-        player.Anim.Play("Skid");
+        bool skipped = player.SkipSkid();
+        if (!skipped)
+            player.Anim.Play("Skid");
     }
 
     public override void LogicUpdate()
