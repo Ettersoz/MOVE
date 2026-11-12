@@ -7,6 +7,7 @@ public class SkidState : PlayerState
 
     public override void Enter()
     {
+   
         player.Anim.Play("Skid");
     }
 

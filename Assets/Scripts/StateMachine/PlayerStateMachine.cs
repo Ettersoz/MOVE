@@ -1,5 +1,4 @@
 
-
 public class PlayerStateMachine 
 {
     // PUBLIC GET SO OTHER SCRIPS (ui, debug text) can see what state we are in, 
@@ -20,6 +19,7 @@ public class PlayerStateMachine
     {
         CurrentState.Exit();
         CurrentState = newState;
+        UnityEngine.Debug.Log(newState);
         CurrentState.Enter();
     }
 }

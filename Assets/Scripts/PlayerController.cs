@@ -296,9 +296,19 @@ public class PlayerController : MonoBehaviour
 
     public void ApplySkid()
     {
-        Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x * .8f, Rb.linearVelocity.y);
-        // if velocity is low enough, just set 0, reduce computation, increase consistency
-        if (Math.Abs(Rb.linearVelocity.x) <= 0.1) Rb.linearVelocity = new UnityEngine.Vector2(0, Rb.linearVelocity.y);
+        Debug.Log(Rb.linearVelocity.x);
+        Rb.linearVelocity = new UnityEngine.Vector2(Rb.linearVelocity.x / 1.05f, Rb.linearVelocity.y);
+        Debug.Log(Rb.linearVelocity.x);
+    }
+
+    public bool SkipSkid()
+    {
+        if (Rb.linearVelocity.x <= 2)
+        {
+            Rb.linearVelocity = new UnityEngine.Vector2(0, Rb.linearVelocity.y);
+            return true;
+        }
+        return false;
     }
 
     // ####################################################
