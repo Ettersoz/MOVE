@@ -303,7 +303,7 @@ public class PlayerController : MonoBehaviour
 
     public bool SkipSkid()
     {
-        if (Rb.linearVelocity.x <= 2)
+        if (Mathf.Abs(Rb.linearVelocity.x) <= 2)
         {
             Rb.linearVelocity = new UnityEngine.Vector2(0, Rb.linearVelocity.y);
             return true;
