@@ -24,13 +24,13 @@ public class JumpState : PlayerState
         {
             // player.Sliding == true -> change state to slide
             if (player.SlidePressed) 
-                machine.ChangeState(player.Slide); 
+                machine.ChangeState(player.Skid); 
 
             // move input != 0 -> change state to run 
-            if (player.MoveInput != 0) 
+            else if (player.MoveInput != 0) 
                 machine.ChangeState(player.Run);
 
-            if (player.MoveInput == 0 && player.Rb.linearVelocity.x != 0)
+            else if (player.MoveInput == 0 && player.Rb.linearVelocity.x != 0)
                 machine.ChangeState(player.Skid);
 
             // if move input == 0 -> change state to idle
