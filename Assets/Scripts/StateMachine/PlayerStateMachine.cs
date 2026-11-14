@@ -19,7 +19,7 @@ public class PlayerStateMachine
     {
         CurrentState.Exit();
         CurrentState = newState;
-        //UnityEngine.Debug.Log(newState);
+        UnityEngine.Debug.Log(newState);
         CurrentState.Enter();
     }
 }
