@@ -18,6 +18,8 @@ public class FallState : PlayerState
 
             if (queued != null)
                 machine.ChangeState(queued);
+            else if (Mathf.Abs(player.Rb.linearVelocity.x) > .5)
+                machine.ChangeState(player.Skid);
             // if jump is being pressed, jump (:
             else if (player.JumpPressed) 
                 machine.ChangeState(player.Jump);
