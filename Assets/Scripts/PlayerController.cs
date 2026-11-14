@@ -265,7 +265,7 @@ public class PlayerController : MonoBehaviour
         if (maxSlideTimer > slideDampeningTime) slideDampening = 1.1f;
 
         // stop sliding when velocity is very low
-        if (currentSlideVelocity <= 1) currentSlideVelocity = 0;
+        if (currentSlideVelocity <= .5) currentSlideVelocity = 0;
         // apply slide at a current rate right now 
 
         if (maxSlideTimer > slideMaxSpeedTime) 
@@ -276,14 +276,20 @@ public class PlayerController : MonoBehaviour
         Rb.linearVelocity = new UnityEngine.Vector2(initialMoveInput * currentSlideVelocity, Rb.linearVelocity.y);
     }
 
-    // function to allow strafing when falling
+    // this logic could be tightened, but I'm hungry so I can't think about it right now. 
     public void ApplyStrafe()
     {
         // determines the strafe cap between the initial horizontal movement speed 
-        // and the minimum strafe speed the player should achieve
+        // and the minimum strafe speed the player should achieve        
+
         float strafeCap = Math.Max(Math.Abs(initialJumpVelocityX), minStrafeSpeed);
 
         float newVelocityX = 0f;
+
+        if (MoveInput == 0 && Math.Abs(Rb.linearVelocity.x) > minStrafeSpeed)
+        {
+            strafeCap = Math.Abs(Rb.linearVelocity.x);
+        }
 
         // The player can only strafe up to the calculated cap 
         if (Math.Abs(Rb.linearVelocity.x + (MoveInput * strafeSpeed)) > strafeCap) 

@@ -32,7 +32,7 @@ public class SlideState : PlayerState
         maxSlideTimer += Time.deltaTime;
 
         // if the player is falling, change to the fall state
-        if (!player.IsGrounded()) machine.ChangeState(player.Fall);
+        if (!player.IsGrounded() && player.IsFalling()) machine.ChangeState(player.Fall);
 
         // currently you can only jump out of a slide. may change this. 
         else if (player.IsGrounded())
