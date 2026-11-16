@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
     public float strafeSpeed = .5f; 
     public float minStrafeSpeed = 4f;
     public bool skid = false;
+    public bool fallingFromJump = false; 
 
     [Header("Variable Jump Values")]
     public float minimumJumpTimer = .08f;

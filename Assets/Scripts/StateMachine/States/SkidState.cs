@@ -9,6 +9,7 @@ public class SkidState : PlayerState
     // checked to see if the player is moving fast enough to trigger the skid state
     public override void Enter()
     {
+        player.fallingFromJump = false;
         bool skipped = player.SkipSkid();
         if (!skipped)
             player.Anim.Play("Skid");

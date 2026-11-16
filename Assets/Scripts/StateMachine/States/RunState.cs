@@ -12,6 +12,7 @@ public class RunState : PlayerState
 
     public override void Enter()
     { 
+        player.fallingFromJump = false;
         player.Anim.Play("Run"); 
         slideTimer = 0f; 
     } 

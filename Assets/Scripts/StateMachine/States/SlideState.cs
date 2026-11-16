@@ -22,7 +22,13 @@ public class SlideState : PlayerState
         // play slide animation, update to be variable on the speed of the slide
         player.Anim.Play("Slide");  
         // set the initial slide velocity to the player's slide force
-        player.currentSlideVelocity = player.slideForce + Mathf.Abs(player.Rb.linearVelocity.x);
+        if (player.fallingFromJump)
+        {
+            player.currentSlideVelocity = player.slideForce + Mathf.Abs(player.Rb.linearVelocity.x);
+            player.fallingFromJump = false;
+        }
+        else 
+            player.currentSlideVelocity = Mathf.Abs(player.Rb.linearVelocity.x);
         // set slide timer to 0 
         maxSlideTimer = 0f;
     } 

@@ -25,6 +25,7 @@ public class IdleState : PlayerState
     // base on the subclass we are making
     public override void Enter()
     {
+        player.fallingFromJump = false;
         player.Anim.Play("Idle0"); 
         randInterval = Random.Range(3f, 4f); 
     } 

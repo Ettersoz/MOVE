@@ -10,6 +10,7 @@ public class JumpState : PlayerState
     {
         player.ApplyJumpMovement();
         player.Anim.Play("JumpUp");
+        player.fallingFromJump = true;
     }
 
     public override void LogicUpdate()
